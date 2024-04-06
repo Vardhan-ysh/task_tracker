@@ -1,16 +1,30 @@
-# task_tracker
 
-A new Flutter project.
+# Tasks Tracker App
 
-## Getting Started
+This app was made using Flutter and Dart development environment. It implements the basic structure of a to-do app and allows users to add, remove or mark complete any task.
 
-This project is a starting point for a Flutter application.
+Libraries Used:
+* uuid: to create unique ids for every task
+* hive: to save data locally on the device of users and retrive whenever needed
+* riverpod: to create appwide providers and manage state
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## How to install the application
+
+The built version of the application for android is available at 
+
+--> [Task Tracker App](https://github.com/Vardhan-ysh/task_tracker/releases/tag/v1.0)
+
+You can also build the application to run on ios, windows, or any website by buiding the source code using respective software.
+
+You can find the zip file of the source code under releases section.
+## Connect with me
+
+- [Github](https://www.github.com/Vardhan-ysh) 
+- [Linkdin](https://www.linkedin.com/in/vardhan-ysh/)
+
+
+
+Yashvardhan Singh
