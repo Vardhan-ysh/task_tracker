@@ -140,7 +140,7 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
       ],
     ));
 
-    if (_isLoading) {
+    if (_isLoading && tasks.isNotEmpty) {
       emptyScreen = const Center(
         child: CircularProgressIndicator(),
       );
