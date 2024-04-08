@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_tracker/models/task.dart';
 import 'package:task_tracker/providers/tasks_provider.dart';
+import 'package:http/http.dart' as http;
 
 // creating a TaskCard widget to display the task details
 
@@ -9,7 +12,13 @@ class TaskCard extends ConsumerWidget {
   const TaskCard({
     required this.task,
     super.key,
+    required this.deleteTask,
+    required this.updateTask,
   });
+
+  final void Function(Task task) updateTask;
+
+  final void Function(String taskId) deleteTask;
 
   final Task task;
 
@@ -18,9 +27,18 @@ class TaskCard extends ConsumerWidget {
     // returning a Dismissible widget to enable swipe to delete functionality
 
     return Dismissible(
-      key: Key(task.id),
-      onDismissed: (direction) {
+      key: ValueKey(task.id),
+      onDismissed: (direction) async {
         // calling the deleteTask method from the TasksNotifier to delete the task
+
+        final url = Uri.https(
+          "task-tracker-49523-default-rtdb.firebaseio.com",
+          "/tasks/${task.id}.json",
+        );
+
+        http.delete(url);
+
+        deleteTask(task.id);
 
         ref.watch(tasksProvider.notifier).deleteTask(task.id);
       },
@@ -31,8 +49,11 @@ class TaskCard extends ConsumerWidget {
           child: ListTile(
             leading: Checkbox(
               value: task.isComplete,
-              onChanged: (value) {
+              onChanged: (value) async {
                 // calling the markTask method from the TasksNotifier to mark the task as complete
+
+                updateTask(task);
+
                 ref.watch(tasksProvider.notifier).markTask(task.id);
               },
             ),

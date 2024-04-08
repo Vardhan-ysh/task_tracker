@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_tracker/models/task.dart';
+// import 'package:task_tracker/models/task.dart';
 import 'package:task_tracker/providers/tasks_provider.dart';
+import 'package:http/http.dart' as http;
 
 //this file is to implement modal bottom sheet to add new task
 
 class NewTask extends ConsumerStatefulWidget {
-  const NewTask({super.key});
+  const NewTask({required this.addTask, super.key});
+
+  final void Function() addTask;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NewTaskState();
@@ -20,6 +27,8 @@ class _NewTaskState extends ConsumerState<NewTask> {
 
   //disposing the controllers
 
+  var _isSending = false;
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -31,7 +40,7 @@ class _NewTaskState extends ConsumerState<NewTask> {
   //if the title or description is empty, show an alert dialog
   //else, call the addTask method from the TasksNotifier to add the task
 
-  void _saveTask() {
+  void _saveTask() async {
     if (_titleController.text.trim().isEmpty ||
         _descriptionController.text.trim().isEmpty) {
       showDialog(
@@ -78,14 +87,50 @@ class _NewTaskState extends ConsumerState<NewTask> {
       final title = _titleController.text.trim();
       final description = _descriptionController.text.trim();
 
+      setState(() {
+        _isSending = true;
+      });
+
+      final url = Uri.https(
+        "task-tracker-49523-default-rtdb.firebaseio.com",
+        "/tasks.json",
+      );
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(
+          {
+            "title": title,
+            "description": description,
+            "isComplete": false,
+          },
+        ),
+      );
+
+      widget.addTask();
+
       //getting the TasksNotifier to call the addTask method
 
       final tasksNotifier = ref.watch(tasksProvider.notifier);
-      tasksNotifier.addTask(title, description);
+      tasksNotifier.addTask(
+        Task(
+          description: description,
+          title: title,
+          id: json.decode(response.body)['name'],
+          isComplete: false,
+        ),
+      );
 
       //closing the modal bottom sheet
 
+      if (!context.mounted) return;
+
       Navigator.of(context).pop();
+
+      widget.addTask();
     }
   }
 
@@ -144,12 +189,15 @@ class _NewTaskState extends ConsumerState<NewTask> {
               ),
               const SizedBox(height: 24),
               OutlinedButton(
-                onPressed: () {
-                  //calling the _saveTask method to save the task
-
-                  _saveTask();
-                },
-                child: const Text('Add Task'),
+                onPressed: _isSending
+                    ? null
+                    : () {
+                        //calling the _saveTask method to save the task
+                        _saveTask();
+                      },
+                child: _isSending
+                    ? const Text('Saving...')
+                    : const Text('Add Task'),
               ),
             ],
           ),
