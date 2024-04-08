@@ -20,7 +20,8 @@ class TaskAdapter extends TypeAdapter<Task> {
       description: fields[0] as String,
       title: fields[1] as String,
       isComplete: fields[3] as bool,
-    )..id = fields[2] as String;
+      id: fields[2] as String,
+    );
   }
 
   @override

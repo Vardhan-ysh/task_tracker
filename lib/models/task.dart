@@ -23,5 +23,6 @@ class Task extends HiveObject {
     required this.description,
     required this.title,
     this.isComplete = false,
-  }) : id = const Uuid().v4();
+    required this.id,
+  });
 }
