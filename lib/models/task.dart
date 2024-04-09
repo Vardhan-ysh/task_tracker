@@ -8,16 +8,16 @@ part 'task.g.dart'; // Generated Hive adapter
 @HiveType(typeId: 0)
 class Task extends HiveObject {
   @HiveField(0)
-  String description;
+  String? description;
 
   @HiveField(1)
-  String title;
+  String? title;
 
   @HiveField(2)
-  String id;
+  String? id;
 
   @HiveField(3)
-  bool isComplete;
+  bool? isComplete;
 
   Task({
     required this.description,

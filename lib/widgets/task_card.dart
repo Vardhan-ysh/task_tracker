@@ -38,9 +38,9 @@ class TaskCard extends ConsumerWidget {
 
         http.delete(url);
 
-        deleteTask(task.id);
+        deleteTask(task.id!);
 
-        ref.watch(tasksProvider.notifier).deleteTask(task.id);
+        ref.watch(tasksProvider.notifier).deleteTask(task.id!);
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
@@ -54,20 +54,20 @@ class TaskCard extends ConsumerWidget {
 
                 updateTask(task);
 
-                ref.watch(tasksProvider.notifier).markTask(task.id);
+                ref.watch(tasksProvider.notifier).markTask(task.id!);
               },
             ),
 
             // displaying the task title and description
 
             title: Text(
-              task.title,
+              task.title!,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
 
                 // adding a line-through decoration to the text if the task is complete
 
-                decoration: task.isComplete
+                decoration: task.isComplete!
                     ? TextDecoration.lineThrough
                     : TextDecoration.none,
                 decorationThickness: 3.5,
@@ -75,7 +75,7 @@ class TaskCard extends ConsumerWidget {
                     Theme.of(context).colorScheme.background.withOpacity(0.8),
               ),
             ),
-            subtitle: Text(task.description),
+            subtitle: Text(task.description!),
           ),
         ),
       ),

@@ -75,7 +75,7 @@ class TasksNotifier extends StateNotifier<List<Task>> {
     final task = box?.get(taskId);
     // print(!task!.isComplete);
     if (task != null) {
-      task.isComplete = !task.isComplete;
+      task.isComplete = !task.isComplete!;
       box?.put(taskId, task);
       state = box!.values.toList();
     }

@@ -43,7 +43,7 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
       "/tasks/${task.id}.json",
     );
 
-    bool change = task.isComplete;
+    bool change = task.isComplete!;
     change = !change;
 
     final response = await http.patch(
@@ -62,7 +62,7 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
       task.isComplete = change;
     });
 
-    print(response.body);
+    // print(response.body);
   }
 
   void _loadItems() async {
@@ -82,12 +82,24 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
     }
 
     if (response.body.isEmpty) {
-      tasks = [];
+      print('Response body is empty.😊😊');
       _isLoading = false;
       return;
+
+      // print("😊😊");
+      // tasks = [];
+      // _isLoading = false;
+      // return;
     }
 
-    final Map<String, dynamic> listData = json.decode(response.body);
+    final Map<String, dynamic>? listData = json.decode(response.body);
+
+    if (listData == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
 
     final List<Task> loadedItems = [];
 
@@ -140,7 +152,7 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
       ],
     ));
 
-    if (_isLoading && tasks.isNotEmpty) {
+    if (_isLoading) {
       emptyScreen = const Center(
         child: CircularProgressIndicator(),
       );
@@ -164,6 +176,22 @@ class _TasksMainScreenState extends ConsumerState<TasksMainScreen> {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Tasks refreshed!'),
+                ),
+              );
+              setState(() {
+                _loadItems();
+              });
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
 
       // floating action button to add a new task
